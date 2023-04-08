@@ -11,3 +11,15 @@ Also a discord server is coming soon.
 The sources are `Books`,
 
 - Primer C++, 5 Edition
+
+## Learning JavaScript
+
+The sources are `Udemy` course,
+
+- By Jonas schmedtman
+
+## Learning Python
+
+The sources are `Udemy` course,
+
+- By Jose Portilla

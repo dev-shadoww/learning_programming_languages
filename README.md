@@ -23,3 +23,15 @@ The sources are `Udemy` course,
 The sources are `Udemy` course,
 
 - By Jose Portilla
+
+## Learning C
+
+The sources are `Books`,
+
+- Learn C Programming, 2e
+
+## Learning Algorithms
+
+The sources are `Books`,
+
+- Introduction To Algorithms, 4e

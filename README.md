@@ -35,3 +35,15 @@ The sources are `Books`,
 The sources are `Books`,
 
 - Introduction To Algorithms, 4e
+
+## Learning NodeJS
+
+The sources are `Udemy` course,
+
+- By Jonas schmedtman
+
+## Learning SQL and PostgreSQL
+
+The sources are `Udemy` course,
+
+- By Stephen Grider

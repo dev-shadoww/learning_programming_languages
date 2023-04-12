@@ -105,3 +105,50 @@ const greet = {
 
 const user = Object.create(greet);
 ```
+
+## Modern JavaScript Development
+
+A `module` is a reusable piece of code, that encapsulates the implementation details, these are imported synchronously. To use it we need to link it to the `html` file using,
+
+```html
+<script type="module" defer src="index.js"></script>
+```
+
+`module_example.js`
+
+```javascript
+console.log("From module_example.js");
+
+export const greet = function () {
+  console.log("Hello From Module !");
+};
+```
+
+```javascript
+import { greet } from "module_example.js";
+
+greet();
+```
+
+`export const ...` is called as `named export`, `export default function () ...` is called as `default export`.
+
+### Using `await` in outside of `async` functions
+
+```javascript
+const res = await fetch("http://api/v1/data");
+const data = await res.json();
+```
+
+Although it blocks the entire execution.
+
+### Common JS Module
+
+```javascript
+export.greet = function(){
+  console.log("Hello World !")
+}
+```
+
+```javascript
+const file_example = require("file_example");
+```

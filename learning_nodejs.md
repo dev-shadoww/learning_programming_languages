@@ -131,3 +131,7 @@ To install a package globally pass `-g` option.`1.18.11`, `1` Major version, `18
 - `^` - Accept patches in Minor releases,
 - `~` - Only accept patch releases,
 - `*` - include all versions
+
+## Back-End Development
+
+The `Client-Server Architecture` is where a `Client` makes a request, and the `Server` responds with a response.

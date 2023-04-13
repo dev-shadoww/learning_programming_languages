@@ -47,6 +47,179 @@ SELECT name, country FROM cities;
 SELECT value1 / value2 AS division_result FROM scores;
 ```
 
-Basic Math Operators,
+Basic and Comparison Math Operators,
 
-`+`, `-`, `*`, `/`, `^` Exponent, `|/` Square root,`@` Absolute value, `%` Remainder.
+`+`, `-`, `*`, `/`, `^` Exponent, `|/` Square root,`@` Absolute value, `%` Remainder, `<>` and `!=` Not equal to, `IN` the value present in a list, `NOT IN` the value not present in a list, `BETWEEN` the value between two other values, `>`, `<`, `>=`, `<=`, `=` Equal to.
+
+### Filtering Results
+
+```sql
+SELECT * FROM cities
+WHERE area > 2000;
+```
+
+Here `FROM` is executed first, then the `WHERE` and lastly `SELECT`,Combining multiple `WHERE` statement with `AND`, `OR`, calculations can also be done in `WHERE` statements.
+
+```sql
+SELECT *
+FROM cities
+WHERE name NOT IN ('a', 'b')
+AND name = 'c';
+```
+
+### Updating rows
+
+```sql
+UPDATE cities
+SET area = 2332
+WHERE area = 5343;
+```
+
+### Deleting rows
+
+```sql
+DELETE FROM cities
+WHERE name = 'a';
+```
+
+### Deleting a table
+
+```sql
+DROP TABLE cities;
+```
+
+## Database Project
+
+### Types of relationships
+
+`One-to-many relationship`, `Many-to-one-relationship`, these both are opposite to each other, `One-to-one relationship`, `Many-to-many relationship`.
+
+### Primary Keys and Foreign Keys
+
+`Primary key`, uniquely identifies a row in table, `Foreign Key` identifies other record in another table that this table is associated with.
+
+`Primary Keys`,
+
+- Each row in every table has one primary key
+- No other row in the same table can have same value
+- Commonly it's called as `id`
+- Either an integer or uuid
+- It will never change
+
+`Foreign Keys`,
+
+- Rows only have this key if they belong to another record
+- Many rows can have same foreign keys
+- Exactly equal to the referenced primary key
+- It will change if the relationship changes
+
+Here `SERIAL` uniquely creates a value for each row,
+
+Creating a table with `PRIMARY KEY`,
+
+```sql
+CREATE TABLE users(
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(50)
+)
+
+INSERT INTO users(username)
+VALUES ('a'), ('b'), ('c');
+```
+
+Creating a table with `FOREIGN KEY`,
+
+```sql
+CREATE TABLE photos(
+  id SERIAL PRIMARY KEY,
+  url VARCHAR(200),
+  userId INTEGER REFERENCES users(id)
+);
+
+INSERT INTO photos(url, userId)
+VALUES ('aa.io', 2), ('bb.o', 1);
+```
+
+Retrieving values from tables,
+
+```sql
+SELECT *
+FROM photos
+WHERE userID = 1;
+```
+
+```sql
+SELECT *
+FROM photos
+JOIN users ON users.id = photos.user_id;
+```
+
+### Constraints around deletion
+
+- `ON DELETE RESTRICT`, Throw an error
+- `ON DELETE NO ACTION`, Throw an error
+- `ON DELETE CASCADE`, Delete the associated data
+- `ON DELETE SET NULL`, set the value to `NULL`
+- `ON DELETE SET DEFAULT`, set the value to `default value`
+
+Setting delete constraints, it should be set on `FOREIGN KEY`,
+
+```sql
+CREATE TABLE cities(
+  country_id INTEGER REFERENCES country(id) ON DELETE CASCADE
+);
+```
+
+## JOINS
+
+```sql
+SELECT *
+FROM comments
+JOIN users ON users.id = comments.user_id;
+```
+
+### Different kinds of JOINS
+
+`Inner Join`,
+
+```sql
+SELECT *
+FROM comments
+INNER JOIN users ON users.id = comments.user_id;
+```
+
+Here the row that doesn't match up with the query is dropped.
+
+`Left Outer Join`,
+
+```sql
+SELECT url, username
+FROM photos
+LEFT JOIN users ON users.id = photos.user_id;
+```
+
+If some row doesn't match up with the query, then it is associated with `NULL` value.
+
+The order of table in `FROM`, and `JOIN` matters.
+
+`Right Outer Join`,
+
+```sql
+SELECT url, username
+FROM photos
+RIGHT JOIN users ON users.id = photos.user_id;
+```
+
+It is the opposite of `Left Outer Join`.
+
+The order of table in `FROM`, and `JOIN` matters.
+
+`Full Outer Join`,
+
+```sql
+SELECT url, username
+FROM photos
+FULL JOIN users ON users.id = photos.user_id;
+```
+
+It combines all the rows.

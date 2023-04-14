@@ -97,3 +97,59 @@ function Diff(props) {
   return <div>{props.use}</div>;
 }
 ```
+
+### Event System and State System
+
+To use `Event System`,
+
+- Decide the type of event
+- Write a function with the name following pattern `handle + EventName`
+- Pass the function as prop
+- Then don't call it, instead just pass it as reference
+- Pass it using a valid event name, like `onClick`, `onMouseOver` etcetera.
+
+```javascript
+function App() {
+  const handleClick = function () {
+    console.log("Button was clicked");
+  };
+
+  return <div onClick={handleClick}>Button</div>;
+}
+```
+
+Two most common events, `onClick`, `onChange`.
+
+To use `State System`,
+
+`State` is data that changes as the user interacts with the app, when this data changes the react will update it automatically.
+
+```javascript
+import { useState } from "react";
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  const handleClick = function () {
+    setCount(count + 1);
+  };
+
+  return (
+    <div>
+      <button onClick={handleClick}>Click here</button>
+      <div>The count is : {count}</div>
+    </div>
+  );
+}
+```
+
+- Import `useState` from `react`
+- `const [count, setCount] = useState(0)`, here `[count, setCount]` is the array destructuring, `useState(0)` is the default value for this state, `count` piece of state, `setCount` used to update the piece of state.
+
+## Using an API in react
+
+`React` doesn't have any inbuilt functionalities to work with API's, for this we need to use 3rd party libraries (like `axios`) or javascript's `fetch()` API,
+
+### Communication from child to parent
+
+In `React` siblings can't communicate directly, they need to communicate through the parent.

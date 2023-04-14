@@ -223,3 +223,88 @@ FULL JOIN users ON users.id = photos.user_id;
 ```
 
 It combines all the rows.
+
+## Grouping and Aggregation
+
+`GROUP BY` finds all the unique id's and then creates a separate group for them.
+
+```sql
+SELECT user_id
+FROM comments
+GROUP BY user_id;
+```
+
+`Aggregation` Functions,
+
+- `COUNT()`, doesn't work on `NULL`
+- `SUM()`
+- `AVG()`
+- `MIN()`
+- `MAX()`
+
+Combining both `Aggregate` functions and `GROUP BY`,
+
+```sql
+SELECT COUNT(*)
+FROM comments
+GROUP BY user_id;
+```
+
+The `HAVING` clause is similar to `WHERE` but used with the `GROUP BY` clause.
+
+## Sorting
+
+`ORDER BY` sorts the table, `ASC` and `DESC`.
+
+```sql
+SELECT *
+FROM products
+ORDER BY price DESC;
+```
+
+`OFFSET` to skip some numbers, `LIMIT` to limit the number of records in result.
+
+```sql
+SELECT *
+FROM products
+OFFSET 40;
+```
+
+Here it skips first 40 records,
+
+```sql
+SELECT *
+FROM products
+LIMIT 10;
+```
+
+Only first 10 records,
+
+## UNIONS and INTERSECTIONS
+
+`UNION` combines two results,
+
+```sql
+(
+  SELECT *
+  FROM products
+  ORDER BY price DESC
+  LIMIT 4
+)
+UNION ALL
+(
+  SELECT *
+  FROM products
+  ORDER BY price / weight DESC
+  LIMIT 4
+);
+```
+
+other keywords,
+
+- `UNION`, join all rows, remove duplicates
+- `UNION ALL`
+- `INTERSECT`, Find common rows and join them, remove duplicates
+- `INTERSECT ALL`
+- `EXCEPT`, find the rows that are in first query, but not in second query, remove duplicates
+- `EXCEPT ALL`

@@ -135,3 +135,183 @@ To install a package globally pass `-g` option.`1.18.11`, `1` Major version, `18
 ## Back-End Development
 
 The `Client-Server Architecture` is where a `Client` makes a request, and the `Server` responds with a response.
+
+## NodeJS Basics
+
+`NodeJS` relies on `V8` and `libuv`.
+
+### `Event loop`
+
+`Start -> Expired Timer Callbacks -> I/O Polling and Callbacks -> SetImmediate Callbacks -> Close Callbacks`,
+
+```javascript
+const fs = require("fs");
+
+setTimeOut(() => console.log("It's timer 1."), 0);
+setImmediate(() => console.log("Immediate call 1."));
+
+fs.readFile("./example.txt", () => {
+  console.log("I/O Completed.");
+  setTimeOut(() => console.log("It's timer 2."), 0);
+  setImmediate(() => console.log("Immediate call 2."));
+});
+
+console.log("This is from top-level code");
+```
+
+### Events
+
+```javascript
+const eventEmitter = require("events");
+
+const emitter_example = new eventEmitter();
+
+emitter_example.on("example_signal", (value) => {
+  console.log(`The example_signal received, and value is ${value}.`);
+});
+
+emitter_example.emit("example_signal", 10);
+```
+
+### Streams
+
+Used to process data piece by piece, without completing the whole read or write operation.
+
+- `Readable` (We can consume data, examples are `fs`, `http`, Important events `data`, `end`, Functions are `pipe()`, `end()`)
+- `Writable` (We can write data, examples are `fs`, `http`, Important events `drain`, `finish`, Functions are `write()`, `end()`)
+- `Duplex` (We can both consume and write data, examples are `net` web socket, Important events `drain`, `finish`, Functions are `write()`, `end()`)
+- `Transform` (Used to transform stream, examples are `zlib`)
+
+```javascript
+const readStream = fs.createReadStream("./example.txt");
+readStream.on("data", (chunk) => {
+  res.write(chunk);
+});
+
+readStream.on("end", () => res.end());
+
+readStream.on("error", (err) => console.log(err));
+
+// OR
+
+const readStreamPipe = fs.createReadStream("./example.txt");
+
+readStreamPipe.pipe(res);
+```
+
+## Building API
+
+### Express
+
+`Express` is a minimal `node.js` framework, higher level of abstraction.
+
+```javascript
+const express = require("express");
+
+const app = express();
+
+app.get("/", (req, res) => {
+  res.status(200).send("Hello From The Server !");
+});
+
+app.get("/sendJSON", (req, res) => {
+  res.status(200).json({
+    message: "Success",
+  });
+});
+
+const port = 3000;
+
+app.listen(port, () => {
+  console.log(`Listening at port ${port}.`);
+});
+```
+
+### REST Architecture
+
+- Separate API into logical resources
+- Expose structured, resource-based URL's
+- Use HTTP methods
+- Send data as JSON
+- Be stateless
+
+The project is a photo selling web application,
+
+`server.js`
+
+```javascript
+const app = require("./app");
+
+const port = 3000;
+
+app.listen(port, () => {
+  console.log(`Listening at port ${port}.`);
+});
+```
+
+`app.js`
+
+```javascript
+const express = require("express");
+const morgan = require("morgan");
+
+const photoRoute = require("./photoRoute");
+
+const app = express();
+
+app.use(morgan("dev"));
+
+/* Important middleware to parse request object */
+app.use(express.json());
+
+/* Serve static files */
+app.use(express.static(`${__dirname}/public`));
+
+app.use("/api/v1/tours", photoRoute);
+
+module.exports = app;
+```
+
+`photoRoute.js`
+
+```javascript
+const express = require("express");
+
+const router = express.Router();
+
+const photoController = require("./photoController");
+
+router.route("/").get(photoController.getPhotos);
+
+router.route("/:id").get(photoController.getPhoto);
+
+module.exports = router;
+```
+
+`photoController.js`
+
+```javascript
+exports.getPhotos = (req, res, next) => {
+  return "All Photos";
+};
+```
+
+`param middleware`,
+
+```javascript
+router.param("id", (req, res, next, val) => console.log("Value is ", value));
+```
+
+### Environment Variables
+
+For setting up `Environment Variables`, create a `config.env` file.
+
+```bash
+NODE_ENV="development" nodemon server.js
+```
+
+```javascript
+const dotenv = require("dotenv");
+
+dotenv.config({ path: "./config.env" });
+```

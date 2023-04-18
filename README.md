@@ -1,8 +1,8 @@
 # Learning Programming Languages
 
-This repo includes notes, created with `markdown`, i am learning coding through all the free sources like `YouTube`, `Books`, `Freecodecamp` etcetra.
+This is `Learning Programming Langauges` repository, created by [@DevShadoww](https://twitter.com/DevShadoww), it includes `markdown` files for each language and technology, which is of course nicely rendered by github.
 
-When i am learning them, i made sure to make notes for them, so these are useful for one who just started coding.
+These files are incomplete because i'm creating them while learning, and also i have specified the sources also, checkout below.
 
 Also a discord server is coming soon.
 
@@ -53,3 +53,9 @@ The sources are `Udemy` course,
 The sources are `Udemy` course,
 
 - By Stephen Grider
+
+## Learning Tkinter
+
+The sources are `Books`,
+
+- Python GIU programming with tkinter, 2e

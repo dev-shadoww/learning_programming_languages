@@ -153,3 +153,95 @@ function App() {
 ### Communication from child to parent
 
 In `React` siblings can't communicate directly, they need to communicate through the parent.
+
+`App.js`
+
+```javascript
+import AppComponent from "./AppComponent";
+
+function App() {
+  const handleSubmit = (term) => {
+    console.log(term);
+  };
+
+  return (
+    <div>
+      <AppComponent onSubmit={handleSubmit} />
+    </div>
+  );
+}
+
+export default App;
+```
+
+`AppComponent.js`
+
+```javascript
+function AppComponent({onSubmit}){
+  function handleClick(){
+    onSubmit();
+  }
+
+  return (
+    <div>
+      <button onClick={handleClick}><button/>
+    </div>;
+  )
+}
+
+export default AppComponent;
+```
+
+### Working with forms
+
+Here html `forms` are used handle both `enter` and `click` events, but the from in browser by default tries to make contact with website, so to prevent it we use `event.preventDefault()`.
+
+Handling text inputs,
+
+- Create new piece of data
+- Create a eventHandler to watch for `onChange` event
+- When it fires, get the value from the input
+- Take this value to update the state
+- Pass the state to the input as prop value
+
+```javascript
+
+import {useState} from 'react';
+
+function AppComponent({onSubmit}){
+  const [term, setTerm] = useState('');
+
+  function handleFormSubmit(event){
+    event.preventDefault();
+    onSubmit();
+  }
+
+  function handleChange(event){
+    setTerm(event.target.value)
+  }
+
+  return (
+    <div>
+      <form onSubmit={handleFormSubmit}>
+        <input value={term} onChange={handleChange}/>
+      </form>
+    </div>;
+  )
+}
+
+export default AppComponent;
+```
+
+Handling list updates,
+
+- Apply a `key` to each element during mapping step
+- After re-rendering compare keys on each value to the keys from previous render
+- Apply minimal set of changes to existing HTML
+
+Requirement of `keys`,
+
+- Use, if there is a list of elements
+- Add key to the topmost `jsx` element
+- Must be a string or number
+- Should be unique for the list
+- Should be consistent across the rerenders

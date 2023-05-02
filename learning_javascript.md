@@ -8,7 +8,7 @@ Before writing enable strict mode by `use strict`,
 
 It prints the value to the console,other methods on `console` are,
 
-`console.table()`, `console.dir()`,
+`console.table()`, `console.dir()`, `console.error()`
 
 ### Variables and Data Types
 
@@ -44,6 +44,38 @@ console.log(`The example value is ${example}.`);
 ```
 
 In javascript `+` converts numbers into strings and `-` operator converts strings into numbers.
+
+### Numbers
+
+`+` converts, `'23'` to 23,
+
+```javascript
+console.log(+"23");
+
+Number.parseInt("23x");
+Number.parseFloat("2.3x");
+Number.isNan(20);
+Number.isFinite(20);
+Number.isInteger(20);
+
+console.log((23).toFixed(2));
+```
+
+```javascript
+Math.sqrt(4);
+Math.max(1, 2, 3);
+Math.min(1, 2, 3);
+
+Math.trunc(23.3);
+Math.floor(23.3);
+Math.ceil(23.3);
+Math.round(23.3);
+```
+
+```javascript
+const randIntGenerator = (min, max) =>
+  Math.floor(Math.random() * (max - min) + 1) + min;
+```
 
 ### If, else statements
 
@@ -375,6 +407,69 @@ const arrAnotherExample = Array.from({ length: 7 }, () => 1);
 - `padStart(), padEnd()`, pad a string with a given value,
 - `repeat()`, replicate string,
 
+## Working with Dates
+
+```javascript
+console.log(new Date());
+```
+
+`Methods on Dates`,
+
+- `getFullYear()`, returns the year,
+- `getMonth()`, returns the month, it is `0` based,
+- `getDay()`, returns the date, day of the week,
+- `getDate()`, returns date,
+- `getHours()`, returns hours,
+- `getMinutes()`, returns minutes,
+- `getSeconds()`, returns seconds,
+- `toISOString()`, Converts the date string to ISO string,
+- `getTime()`, returns time stamp, also `Date.now()`
+
+### Internalization API
+
+```javascript
+const options = {
+  hours: "numeric",
+  minutes: "numeric",
+};
+
+const locale = navigator.language;
+
+const dateInCountry = new Intl.DateTimeFormat(locale, options).format(
+  new Date()
+);
+```
+
+```javascript
+const options = {
+  style: "unit",
+};
+
+const locale = navigator.language;
+
+const numberInCountry = new Intl.NumberFormat(locale).format(2093839.938);
+```
+
+### Timers
+
+`setTimeOut()`,
+
+```javascript
+setTimeOut(() => {
+  console.log("Executes after 3 seconds,");
+}, 3000);
+```
+
+`setTimeInterval()`,
+
+```javascript
+setTimeInterval(() => {
+  console.log("Executes after every 3 seconds,");
+}, 3000);
+```
+
+`clearTimeOut()` and `clearTimeInterval()` are used to remove the timers,
+
 ## Functions
 
 `JS` has `first class functions`, this means that functions are simply values, and `higher order function` is the one which accepts a function as argument and then returns a function,
@@ -498,9 +593,11 @@ closureFunction();
 ```javascript
 const header = document.querySelector("header");
 
-const hValue = header.value;
+const headerValue = header.value;
 
 header.textContent = "It is a header element.";
+
+header.innerHTML = "<h1>inner HTML</h1>";
 ```
 
 `Event Listeners` can be added with `addEventListener()` function,
@@ -510,6 +607,45 @@ button.addEventListener("click", function () {
   console.log("It's a callback function.");
 });
 ```
+
+`Node` is represented by a javascript object, then it has `elements`, `text`, `comment`, `document`.
+
+### Selecting, Creating and Deleting elements
+
+```javascript
+const html = document.documentElement;
+const head = document.head;
+const body = document.body;
+```
+
+`Selecting`, The `querySelectorAll` returns a `Node List`, but `getElementsByTagName` returns a `HTML Collection` it is a live collections (dynamic),
+
+```javascript
+document.querySelector(".header");
+document.querySelectorAll(".header");
+
+document.getElementById("#header");
+document.getElementsByTagName("button");
+
+document.getElementsByClassName("header");
+```
+
+### Creating and Inserting
+
+```javascript
+const buttonBox = document.createElement("div");
+
+header.prepend(buttonBox);
+header.append(buttonBox.cloneNode(true));
+header.before(buttonBox);
+header.after(buttonBox);
+
+buttonBox.remove();
+
+insertAdjacentHTML("beforebegin", html);
+```
+
+### Styling in DOM
 
 Manipulating `CSS Styles`,
 
@@ -525,6 +661,121 @@ header.classList.remove("hidden");
 header.classList.toggle("hidden");
 
 header.classList.contains("hidden");
+
+getComputedValue(header).color;
+
+document.documentElement.style.setProperty("--color-primary", "#fff");
+
+headerImg.alt;
+headerImg.className;
+headerImg.getAttribute("custom");
+headerImg.setAttribute("custom", "value");
+```
+
+Special data values can be added as attribute, `data-value-is = 3`,
+
+```javascript
+headerImg.dataset.valueIs;
+```
+
+### Smooth Scrolling
+
+Current scroll (x / y), `window.pageXOffset`, `window.pageYOffset`,
+Current viewport width/height, `document.documentElement.clientWidth`, `document.documentElement.clientHeight`,
+
+```javascript
+const coordinates = header.getBoundingClientRect();
+
+window.scrollTo({
+  left: coordinates.left + window.pageXOffset,
+  top: coordinates.top + window.pageYOffset,
+  behavior: "smooth",
+});
+```
+
+`modern way`,
+
+```javascript
+header.scrollIntoView({ behavior: "smooth" });
+```
+
+### Event Propagation
+
+It has `capturing phase`, `target phase`, and `bubbling phase`, the `event listeners` in javascript only listen to event in `bubbling phase`.
+
+### DOM Traversing
+
+```javascript
+const h1 = document.querySelector("h1");
+```
+
+Selecting children,
+
+```javascript
+h1.querySelector("span");
+
+h1.childNodes;
+h1.children;
+h1.firstElementChild;
+h1.lastElementChild;
+```
+
+Selecting Parent,
+
+```javascript
+h1.parentNode;
+h1.parentElement;
+
+h1.closest("header");
+```
+
+Selecting Siblings,
+
+```javascript
+h1.previousElementSibling;
+h1.nextElementSibling;
+
+h1.previousSibling;
+h1.nextSibling;
+```
+
+### Passing arguments to event handler functions
+
+use `bind()` method to pass arguments to event handler functions.
+
+### Intersection Observer API
+
+Here it check if `header` is intersecting the viewport at threshold of `0.1`.
+
+```javascript
+const obsCallBack = function (entries, observer) {
+  entries.forEach((item) => console.log(item));
+};
+
+const obsOptions = {
+  root: null,
+  threshold: 0.1,
+};
+
+const observer = new intersectionObserver(obsCallBack, obsOptions);
+observer.observe(header);
+```
+
+### LifeCycle of DOM events
+
+```javascript
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("Loaded.");
+});
+
+window.addEventListener("load", function () {
+  console.log("Page loaded.");
+});
+
+window.addEventListener("beforeunload", function (e) {
+  e.preventDefault();
+  e.returnValue = "";
+});
 ```
 
 ## Object Oriented Programming
@@ -657,6 +908,146 @@ const greet = {
 const user = Object.create(greet);
 ```
 
+## Asynchronous JavaScript
+
+In JavaScript most code is `synchronous`, it is executed line by line, waiting for the previous code to finish executing.
+
+`setTimeOut()` works in `asynchronous` way, it do not block the other code,so `asynchronous` is `non-blocking`.
+
+### AJAX
+
+`Asynchronous JavaScript And XML`, it allows to communicate with remote web servers in `asynchronous` way.
+
+```javascript
+const request = new XMLHttpRequest();
+request.open("GET", "https://api.com");
+request.send();
+
+request.addEventListener("load", function () {
+  console.log(this.responseText);
+
+  const data = JSON.parse(this.responseText);
+});
+```
+
+### Promises and `fetch` API
+
+`Promise` is an object that is used as a placeholder for future result of an asynchronous operation.
+
+```javascript
+const request = fetch("https://api.com");
+```
+
+### Consuming a Promises
+
+```javascript
+const request = fetch("https://api.com")
+  .then(function (response) {
+    return response.json();
+  })
+  .then(function (data) {
+    console.log(data);
+  });
+```
+
+### Handling Rejected Promises
+
+`then()` can accept two callback functions, one for accepted promises, and another one for rejected promises,
+
+If the promises are chained then one single `catch()` method can be used at last promise.
+
+```javascript
+const request = fetch("https://api.com")
+  .then(
+    (response) => response.json(),
+    (err) => console.log(`Error : ${err}`)
+  )
+  .then((data) => console.log(data));
+```
+
+```javascript
+const request = fetch("https://api.com")
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data);
+    return fetch("https://api.in");
+  })
+  .then((response) => response.json())
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err));
+```
+
+`Throwing Errors Manually`,
+
+```javascript
+const request = fetch("https://api.com")
+  .then((response) => {
+    if (response.ok == false) throw new Error("Error");
+    return response.json();
+  })
+  .then((data) => {
+    console.log(data);
+  });
+```
+
+### Building Promises
+
+```javascript
+const promiseExample = new Promise(function (resolve, reject) {
+  let a = 2;
+  if (a === 2) {
+    resolve("This promise is resolved.");
+  } else {
+    reject(new Error("This promise is rejected."));
+  }
+});
+
+promiseExample.then((res) => console.log(res)).catch((err) => console.log(err));
+```
+
+### Async and Await
+
+```javascript
+const request = async function () {
+  const res = await fetch("https://api.com");
+  const data = await res.json();
+};
+```
+
+`Error Handling`,
+
+```javascript
+const request = async function () {
+  try {
+    const res = await fetch("https://api.com");
+    const data = await res.json();
+  } catch (err) {
+    console.log(err);
+  }
+};
+```
+
+### Returning from Async
+
+```javascript
+const request = async function () {
+  const res = await fetch("https://api.com");
+  const data = await res.json();
+  return "Fetch completed.";
+};
+
+request.then((data) => console.log(data));
+```
+
+### Running promises in parallele
+
+```javascript
+async function(){
+  const data = await Promise.all([fetchSomething(), fetchSomething()])
+  console.log(data)
+}
+```
+
 ## Modern JavaScript Development
 
 A `module` is a reusable piece of code, that encapsulates the implementation details, these are imported synchronously. To use it we need to link it to the `html` file using,
@@ -702,4 +1093,14 @@ export.greet = function(){
 
 ```javascript
 const file_example = require("file_example");
+```
+
+### Using parcel and babel
+
+Use parcel for development,`parcel index.html`, to build use `parcel build index.html`.
+
+For poly filling use `core-js/stable` and `regenerator-runtime/runtime` modules.
+
+```javascript
+
 ```

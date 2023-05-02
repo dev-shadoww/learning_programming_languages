@@ -308,3 +308,44 @@ other keywords,
 - `INTERSECT ALL`
 - `EXCEPT`, find the rows that are in first query, but not in second query, remove duplicates
 - `EXCEPT ALL`
+
+## Sub queries
+
+```sql
+SELECT price
+FROM department
+WHERE price > (
+  SELECT MAX(price)
+  FROM department
+  WHERE department_s = 'Cloths'
+);
+```
+
+The `SELECT` should contain a sub query that has a single value, `FROM` should contain a sub query that produces many rows, many columns, or many rows, single column, but in `FROM` the sub query needs to be aliased, and it should be compatible with the `SELECT` and `WHERE`.
+
+The sub query can also access data from outside query.
+
+## Distinct, Greatest, Least, Case Keywords
+
+```sql
+SELECT DISTINCT cities
+FROM countries;
+```
+
+```sql
+SELECT GREATEST(10, 20, 30);
+```
+
+```sql
+SELECT LEAST(10, 20, 30);
+```
+
+```sql
+SELECT price,
+  CASE
+    WHEN price > 600 THEN 'High'
+    WHEN price < 300 THEN 'Low'
+    ELSE 'Very Low'
+    END
+FROM store;
+```

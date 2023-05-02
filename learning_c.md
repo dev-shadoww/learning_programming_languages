@@ -1,5 +1,34 @@
 # Learning C
 
+## Formatted output
+
+It begins with the `%` character and has the following elements,
+
+Zero or more flag characters:
+
+- Left-aligned: This is the - character. If missing, the value will be right-aligned.
+- The `+` sign to show a positive or negative value, or a space to only show a `–` sign.
+- Zero-padding: 0.
+- A variant of formatting: This is the # character; the variant depends on the conversion type.Revisiting printf()
+
+An optional minimum field width denoted by a decimal integer constant. 3. An optional precision specification denoted by a period (.) and optionally followed by a decimal integer constant.
+
+An optional size modifier is expressed as one of the following letters:
+
+- Long or long-long: l, ll, or L
+- Short or byte: h or hh
+- Specific type: j, z, or t
+
+The conversion operation, which is a single character that may be one of
+
+- An unsigned integer: d, i, o, u, x, or X
+  the following:
+- A pointer: n or p
+- A signed integer: d or i
+- A floating-point: a, A, e, E, f, F, g, or G
+- A character (c) or string (s)
+- The % character itself
+
 ## Building Multi File Programs With Make
 
 ```bash

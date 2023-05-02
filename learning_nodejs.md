@@ -227,6 +227,10 @@ app.listen(port, () => {
 });
 ```
 
+### MVC Architecture
+
+It is composed of `Application Logic`, `Business Logic` and `Presentation Logic`.
+
 ### REST Architecture
 
 - Separate API into logical resources
@@ -314,4 +318,189 @@ NODE_ENV="development" nodemon server.js
 const dotenv = require("dotenv");
 
 dotenv.config({ path: "./config.env" });
+```
+
+## Using MongoDB with Mongoose
+
+### Connecting with express
+
+```javascript
+const mongoose = require("mongoose");
+
+mongoose
+  .connect("https://db.io", {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+  })
+  .then((connection) => {
+    console.log("DB Connected.");
+  })
+  .catch((error) => {
+    console.log("DB Is Not Connected.");
+  });
+```
+
+### Creating a model
+
+`photoModel.js`
+
+```javascript
+const photoSchema = new mongoose.schema({
+  user: {
+    type: String,
+    required: [true, "A Photo must have a user name."],
+    unique: true,
+    trim: true,
+  },
+  rating: {
+    type: Number,
+    default: 4.0,
+  },
+  images: [String],
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
+});
+
+const Photo = new mongoose.model("Photo", photoSchema);
+
+module.exports = Photo;
+```
+
+### Creating Documents
+
+```javascript
+const testPhoto = Photo.save({
+  user: "user",
+  rating: 4.5,
+});
+
+testPhoto
+  .then((doc) => {
+    console.log(doc);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+```
+
+Another way of creating Documents,
+
+```js
+exports.createPhotoDoc = async function (req, res) {
+  try {
+    const newPhoto = await Photo.create(req.body);
+
+    res.status(200).json({
+      data: {
+        newPhoto,
+      },
+      status: "success",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+```
+
+### Reading Documents
+
+```js
+exports.getAllPhotos = async function (req, res) {
+  try {
+    const photos = await Photo.find();
+
+    res.status(200).json({
+      data: {
+        photos,
+      },
+      status: "success",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+```
+
+```js
+exports.getPhoto = async function (req, res) {
+  try {
+    const photos = await Photo.findById(req.params.id);
+
+    res.status(200).json({
+      data: {
+        photos,
+      },
+      status: "success",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+```
+
+### Updating Documents
+
+```js
+exports.updatePhoto = async function (req, res) {
+  try {
+    const photo = await Photo.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(200).json({
+      data: {
+        photo,
+      },
+      status: "success",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+```
+
+### Deleting Documents
+
+```js
+exports.updatePhoto = async function (req, res) {
+  try {
+    await Photo.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({
+      data: null,
+      status: "success",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+```
+
+### Implementing Filtering
+
+For filtering the values are passed in the `url`, `https://api/v1/photos?resolution=720p&price=10`, `req.query` contains all the key, value pairs passed in the `url`.
+
+```javascript
+exports.getAllPhotos = async function (req, res) {
+  try {
+    const queryObj = { ...req.query };
+    const excludedFields = ["page", "limit", "sort", "fields"];
+    excludeFields.forEach((el) => delete queryObj[el]);
+
+    const photos = await Photo.find(queryObj);
+
+    res.status(200).json({
+      data: {
+        photos,
+      },
+      status: "success",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
 ```

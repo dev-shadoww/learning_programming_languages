@@ -349,3 +349,27 @@ SELECT price,
     END
 FROM store;
 ```
+
+## Postgres
+
+### Data types
+
+`Numbers`, `Currency`, `Binary`, `Date/Time`, `Character`, `JSON`, `Geometric`, `Range`, `Arrays`, `Boolean`, `XML`, `UUID`, `CHAR` etc.
+
+`Rules`,
+
+- `SERIAL`, for id's
+- `INTEGER`, to store a number without decimal
+- `NUMERIC` or `DOUBLE`, to store a number with decimal
+- `CHAR(5)`
+- `VARCHAR`
+- `TEXT`
+- `true, yes, on, 1, t, y`
+- `false, no, off, 0, f, n`
+- `NULL`
+
+Storing Dates,
+
+The `date` formats are, `1980-11-20`, `NOV-20-1980`, `20-NOV-1980`, `1980-November-20`, `November 20, 1980` etcetera.
+
+The `time` formats are, `01:23 AM`, `20:34`, `20:34 UTC`.

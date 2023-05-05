@@ -20,12 +20,24 @@ The numbers to be sorted are also known as the `keys`, the data associated with 
 ```pseudo-code
 INSERTION-SORT(A, n)
 
-for i = 2 to n
-  key = A[i]
-  // insert A[i] into the sorted sub array A[1: i - 1].
-  j = i - 1
-  while j > 0 and A[j] > key
-    A[j + 1] = A[j]
-    j = j - 1
-  A[j + 1] = key
+1. for i = 2 to n
+2.  key = A[i]
+3.  // insert A[i] into the sorted sub array A[1: i - 1].
+4.  j = i - 1
+5.  while j >= 0 and A[j] > key
+6.    A[j + 1] = A[j]
+7.    j = j - 1
+8.  A[j + 1] = key
 ```
+
+`Loop invariants` helps us understand why an algorithm is correct, it requires this three things
+
+- `Initialization`, Prior to first iteration
+- `Maintenance`, If it is true prior to the first iteration, then it remains true before the next iteration
+- `Termination`, The loop terminates, and when it terminates, the invariant usually along with the reason that the loop terminated gives us a useful property that helps show that the algorithm is correct.
+
+## Characterizing running times
+
+`Asymptotic` efficiency, here we study how the running time of an algorithm
+increases with the size of the input in the limit, as the size of the input
+increases without bound.

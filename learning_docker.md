@@ -86,3 +86,59 @@ docker build -t linuxMachine/simpleWeb .
 ```bash
 docker run -p 8080:8080 linuxMachine/simpleWeb
 ```
+
+## Docker compose with multiple local containers
+
+### Docker Compose
+
+There are two options for connecting different docker containers,
+
+- Using Docker CLI
+- Using Docker Compose
+
+`Docker Compose` is used to start multiple docker containers at the same time.
+
+To start using the `Docker Compose` create a `docker-compose.yml` file with all the `docker-cli` commands.
+
+`docker-compose.yml`
+
+```yml
+version: "3"
+services:
+  redis-server:
+    image: "redis"
+  node-app:
+    restart: always
+    build: .
+    ports:
+      - "4001:8081"
+```
+
+The service names such as `redis-server` can be directly used in the code, and docker will automatically set up all networking setup and allows the connection to the specified container.
+
+`docker-compose` commands, use `-d` option to run in background,
+
+- `docker-compose up`
+- `docker-compose up --build`
+- `docker-compose down`
+- `docker-compose ps`
+
+`Restart Policies`,
+
+- `"no"`, Never attempt to restart,
+- `always`, Always try to restart it,
+- `on-failure`, Only start if the container stops with error code,
+- `unless-stopped`, Always restart unless we forcibly stop it,
+
+### Setting up docker for node server
+
+```dockerfile
+FROM node:alpine
+
+WORKDIR '/app'
+COPY package.json .
+RUN npm install
+COPY . .
+
+CMD ["npm","start"]
+```

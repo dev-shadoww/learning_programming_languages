@@ -1,5 +1,20 @@
 # Learning C
 
+## Dynamic memory allocation
+
+The routines for dynamic memory allocation are defined in `stdlib.h`, the function are `malloc`, `calloc` and `realloc`, each of these functions returns a `void*` pointer to a block of memory in the heap space.
+
+`void*` is a pointer type that is of an unknown or generic type; a pointer of the `void*` type must be cast to the required pointer type before you can use that pointer.
+
+```c
+int *int_first_ = (int *)malloc(sizeof(int));
+*int_first = 3;
+```
+
+```c
+free(int_first);
+```
+
 ## Formatted output
 
 It begins with the `%` character and has the following elements,
@@ -28,6 +43,15 @@ The conversion operation, which is a single character that may be one of
 - A floating-point: a, A, e, E, f, F, g, or G
 - A character (c) or string (s)
 - The % character itself
+
+## Input from command line
+
+The `main()` has two forms, the program name itself is always placed in `argv[0]`. Therefore, argc will always be at least 1.
+
+```c
+void main(void);
+void main(int argc, char *argv[]);
+```
 
 ## Building Multi File Programs With Make
 

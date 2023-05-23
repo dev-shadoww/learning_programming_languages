@@ -3,38 +3,16 @@
 ## Introduction
 
 ```javascript
-/*
-  1) Import REACT and REACTDOM
-
-  React knows how to work with components, ReactDOM knows how to render it on screen.
-*/
-
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-/* 
-  2) Get reference to the div with id root
-*/
-
 const el = document.getElementById("root");
 
-/* 
-  3) Tell react to take control of that element
-*/
-
 const root = ReactDOM.createRoot(el);
-
-/* 
-  4) Create a component
-*/
 
 function App() {
   return <h1>Hello World !</h1>;
 }
-
-/* 
-  5) Show the component on screen
-*/
 
 root.render(<App />);
 ```
@@ -105,7 +83,7 @@ To use `Event System`,
 - Decide the type of event
 - Write a function with the name following pattern `handle + EventName`
 - Pass the function as prop
-- Then don't call it, instead just pass it as reference
+- Don't call it, instead just pass it as reference
 - Pass it using a valid event name, like `onClick`, `onMouseOver` etcetera.
 
 ```javascript
@@ -194,7 +172,7 @@ export default AppComponent;
 
 ### Working with forms
 
-Here html `forms` are used handle both `enter` and `click` events, but the from in browser by default tries to make contact with website, so to prevent it we use `event.preventDefault()`.
+Here html `forms` are used to handle both `enter` and `click` events, but the from in browser by default tries to make contact with website, so to prevent it we use `event.preventDefault()`.
 
 Handling text inputs,
 
@@ -245,3 +223,64 @@ Requirement of `keys`,
 - Must be a string or number
 - Should be unique for the list
 - Should be consistent across the rerenders
+
+## Handling forms
+
+Updating a state with respect to array and objects,
+
+```javascript
+const handleCreate = (item) => {
+  const [items, setItems] = useState([]);
+
+  const itemsList = [...items, item];
+
+  setItems(itemList);
+};
+```
+
+Inserting using `slice()`,
+
+```javascript
+const handleCreate = (item, index) => {
+  const [items, setItems] = useState([]);
+
+  const itemsList = [...items.slice(0, index), item, items.slice(index)];
+
+  setItems(itemList);
+};
+```
+
+Removing elements using `filter()`,
+
+```javascript
+const handleCreate = (item) => {
+  const [items, setItems] = useState([]);
+
+  const removeItems = (removeItem) => {
+    const itemsList = items.filter((item) => item != removeItem);
+    setItems(itemList);
+  };
+};
+```
+
+Adding or changing properties in objects,
+
+```javascript
+const handleCreate = () => {
+  const [items, setItems] = useState({
+    color: red,
+  });
+
+  const changeValue = (color) => {
+    const updatedItems = { ...items, color: color };
+
+    setItems(updatedItems);
+  };
+
+  const removeValue = (color) => {
+    const { color, ...rest } = items;
+
+    setItems(rest);
+  };
+};
+```

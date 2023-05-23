@@ -8,14 +8,22 @@
 * {
   margin: 0;
   padding: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+html {
   box-sizing: border-box;
+  font-size: 62.5%;
 }
 
 body {
   font-family: sans-serif;
   font-weight: 400;
-  font-size: 16px;
-  line-height: 1.7;
   color: #777;
 }
 ```
@@ -136,6 +144,107 @@ Text coloring,
 - `flex-grow: 0 | <integer>`
 - `flex-shrink: 1 | <integer>`
 - `flex-basis: auto | <length>`
+
+## CSS Grids
+
+```html
+<div class="grid-container">
+  <p class="grid-item">Grid Item</p>
+</div>
+```
+
+```css
+.flex-container {
+  display: grid;
+}
+```
+
+`Grid Container` properties,
+
+- `grid-template-rows, grid-template-columns, grid-template-areas`
+- `grid-row-gap, grid-column-gap`
+- `justify-items, align-items, justify-content, align-content`
+- `grid-auto-rows, grid-auto-columns, grid-auto-flow`
+
+`Grid Items` properties,
+
+- `grid-row-start, grid-row-end, grid-column-start, grid-column-end`
+- `justify-self, align-self`
+- `order`
+
+## Writing media queries using sass
+
+Here `1em = 16px`,
+
+```scss
+@mixin respond($breakPoint) {
+  @if $breakPoint == phone {
+    @media (max-width: 37.5em) {
+      @content;
+    }
+  }
+
+  @if $breakPoint == tab-port {
+    @media (max-width: 56.25em) {
+      @content;
+    }
+  }
+
+  @if $breakPoint == tab-land {
+    @media (max-width: 75em) {
+      @content;
+    }
+  }
+
+  @if $breakPoint == big-desktop {
+    @media (max-width: 112.5em) {
+      @content;
+    }
+  }
+}
+```
+
+## Responsive images
+
+### Resolution switching
+
+Decrease image resolution on smaller screens.
+
+```html
+<img
+  srcset="image-1x.png 200w, image-2x.png 300w"
+  sizes="(max-width: 900px) 20vw, (max-width: 600px) 30vw, 300px"
+/>
+```
+
+### Density Switching
+
+Half the resolution.
+
+```html
+<img srcset="image-1x.png 1x, image-2x.png 2x" />
+```
+
+### Art Direction
+
+Different image on smaller screens.
+
+```html
+<picture>
+  <source
+    srcset="image-1x.png 1x, image-2x.png 2x"
+    media="(max-width: 37.5em)"
+  />
+</picture>
+```
+
+## Testing for browser support
+
+```css
+@supports (backdrop-filter: blur(20px)) {
+  backdrop-filter: blur(20px);
+}
+```
 
 ## Introduction to Sass
 

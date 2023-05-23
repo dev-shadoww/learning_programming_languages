@@ -71,3 +71,9 @@ The sources are `Udemy` course,
 The sources are `Udemy` course,
 
 - By Stephen Grider
+
+## Learning ncurses
+
+The sources are `Books`,
+
+- Programmer's guide to ncurses

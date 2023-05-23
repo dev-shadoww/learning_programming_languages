@@ -1391,12 +1391,465 @@ app.use("/api", limiter);
 
 ```javascript
 app.use(helmet());
-
 app.use(express.json({ limit: "10kb" }));
-
 app.use(mongoSanitize());
-
 app.use(xss());
-
 app.use(hpp());
+```
+
+## Modelling Data
+
+### MongoDB Data Modelling
+
+It is process of structuring unstructured data in a logical way, types of relationship between data are, `1-to-1`, `1-to-few` or `1-to-many` or `1-to-ton`, `many-to-many`.
+
+In `Referenced / Normalized` all the data is separated into it's individual components, but in `Embedded / DeNormalized` all the data is made into one big chunk,
+
+which one to choose?
+
+For `Relationship Type`(1:Few, 1:Many), `Data Access Patterns`(Data is mostly read, data does not change quickly, high read/write ratio) and `Data Closeness`(Datasets really belong together) then `Embedding` is the way to go.
+
+For `Relationship Type`(1:Many, 1:Ton, Many:Many), `Data Access Patterns`(Data is updated a lot, low read/write ratio) and `Data Closeness`(Datasets doesn't belong together and frequently need to query both datasets on their own) then `Referencing` is the way to go.
+
+Types of referencing, `child referencing`, `parent referencing`, `two-way referencing`.
+
+### GeoSpatial Data
+
+```javascript
+const locationSchema = new mongoose.schema({
+  startLocation: {
+    type: {
+      type: String,
+      default: "Point",
+      enum: ["Point"],
+    },
+    coordinates: [Number],
+    address: String,
+    description: String,
+  },
+  locations: [
+    {
+      type: {
+        type: String,
+        default: "Point",
+        enum: ["Point"],
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+      day: Number,
+    },
+  ],
+});
+```
+
+### `Embedding`
+
+```javascript
+const photoSchema = new mongoose.schema({
+  users: Array,
+});
+```
+
+`req.body`,
+
+```json
+{
+  users:{
+    "id_1",
+    "id_2"
+  }
+}
+```
+
+```javascript
+photoSchema.pre("save", async function (next) {
+  const usersPromise = this.users.map((id) => await User.findById(id));
+  this.users = await Promise.all(usersPromise);
+  next();
+});
+```
+
+### Referencing
+
+```javascript
+const photoSchema = new mongoose.schema({
+  users: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+    },
+  ],
+});
+```
+
+`req.body`,
+
+```json
+{
+  "users": {
+    "id_1": "",
+    "id_2": ""
+  }
+}
+```
+
+```javascript
+exports.getPhoto = catchAsync(async (req, res, next) => {
+  const photo = await Photo.findById(req.params.id).populate({
+    path: "users",
+    select: "-__v",
+  });
+});
+```
+
+it can also be implemented in query middleware,
+
+```javascript
+photoSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "users",
+    select: "-__v",
+  });
+  next();
+});
+```
+
+### Parent Referencing
+
+```javascript
+const photoSchema = new mongoose.schema({
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User",
+  },
+});
+```
+
+`req.body`,
+
+```json
+{
+  "user": "id_1"
+}
+```
+
+it can also be implemented in query middleware,
+
+```javascript
+photoSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "users",
+    select: "-__v",
+  });
+  next();
+});
+```
+
+### Virtual Populate
+
+```javascript
+photoSchema.virtual("reviews", {
+  ref: "Review",
+  foreignField: "tour",
+  localField: "_id",
+});
+```
+
+```javascript
+exports.getPhoto = catchAsync(async (req, res, next) => {
+  const photo = await Photo.findById(req.params.id).populate({
+    path: "reviews",
+    select: "-__v",
+  });
+});
+```
+
+### Nested Routes
+
+`POST /tour/123de/review`,
+
+```javascript
+router.route("/:tourId/reviews").post(reviewController.createReview);
+```
+
+```javascript
+exports.createReview = catchAsync(async (req, res, next) => {
+  if (!req.body.tour) req.body.tour = req.params.tourId;
+  if (!req.body.user) req.body.user = req.user.id;
+});
+```
+
+### Nested Routes With Express
+
+```javascript
+const reviewRouter = require("/reviewRouter");
+
+router.use("/:tourID/reviews", reviewRouter);
+```
+
+In `reviewRouter.js`, `mergeParams` will allow the access to the params from the parent router.
+
+```javascript
+router = express.Router({ mergeParams: true });
+```
+
+### Nested GET Endpoint
+
+The same route is used with a `GET` method.
+
+### ME Endpoint
+
+```javascript
+exports.getMe = catchAsync((req, res, next) => {
+  req.params.id = req.users.id;
+});
+```
+
+### Indexes
+
+Indexes is an ordered list, which improves the query performance.
+
+```javascript
+photoSchema.index({ url: 1 });
+```
+
+### Static method on schema
+
+The `Static` method points to the model.
+
+```javascript
+reviewSchema.static.calcAverageRating = async function (photo) {
+  const stats = await this.aggregate([
+    {
+      $match: { photo: photoId },
+    },
+    {
+      $group: {
+        _id: "$photo",
+      },
+    },
+  ]);
+};
+```
+
+```javascript
+reviewSchema.post("save", async function () {
+  this.constructor.calcAverageRating(this.photo);
+
+  await Photo.findByIdAndUpdate(photoId, {
+    averageRating: stats[0].averageRating,
+  });
+});
+```
+
+### Preventing Duplicates
+
+```javascript
+reviewSchema.index({ photo: 1, user: 1 }, { unique: true });
+```
+
+### GeoSpatial Queries
+
+```javascript
+resortSchema.index({ startLocation: "2dsphere" });
+```
+
+```javascript
+exports.getResortsWithin = catchAsync(async (req, res, next) => {
+  const { distance, latlang, unit } = req.params;
+  const [lat, lang] = latlang.split(",");
+
+  const radius = unit === "mi" ? distance / 3963.2 : distance / 6372.1;
+
+  const resorts = await Resort.find({
+    startLocation: {
+      $geoWithin: {
+        $centerSphere: [[lng, lat], radius],
+      },
+    },
+  });
+});
+```
+
+## Server Side Rendering
+
+### Pug in Express
+
+```javascript
+const path = require("path");
+
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
+
+app.get("/", (req, res) => {
+  res.status(200).render("base", {
+    photo: "Animal",
+  });
+});
+```
+
+`Pug` is a template engine used to create html templates.
+
+```pug
+doctype html
+html
+  head
+    title Photos #{photo}
+    link(rel='stylesheet' href='/style.css')
+
+  body
+    h1= photo
+    // html comment
+    //- Pug comment
+
+    - const x = 9;
+    h2= x
+
+    p.para-text.white-color This is a paragraph
+```
+
+### Including files in Pug
+
+`_header.pug`
+
+```pug
+header
+  h1 This is a header
+```
+
+`base.pug`,
+
+```pug
+include _header
+```
+
+### Extends in Pug
+
+```pug
+block content
+```
+
+```pug
+extends base
+
+block content
+  h1 This is a block content
+```
+
+Here the entire base template is copied into the other pug template, by extends.
+
+```pug
+each photo, i in photos
+  h1= photo.url
+```
+
+```pug
+mixin mixinExample(url)
+  h1= url
+
++mixinExample(url)
+```
+
+```javascript
+res.locals.user = user;
+```
+
+### Assigning new page
+
+```javascript
+if (res.data.status === "ok") {
+  window.setTimeOut(() => {
+    location.assign("/home");
+  }, 1000);
+}
+```
+
+## Deployment
+
+Install `compression` module,
+
+```javascript
+const compression = require("compression");
+
+app.use(compression());
+```
+
+## Payments, emails and file uploads
+
+### Uploading images through multer
+
+install `multer` package, `npm i multer`,
+
+```javascript
+const multer = require("multer");
+
+const multerStorage = multer.diskStorage({
+  destination: (req, file, callback) => {
+    callback(null, "public/images");
+  },
+  filename: (req, file, callback) => {
+    const extension = file.mimetype.split("/")[1];
+    cb(null, `user-${req.user.id}-${Date.now()}.${extension}`);
+  },
+});
+
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, callback) => {
+  if (file.mimetype.startWith("image")) {
+    callback(null, true);
+  } else {
+    callback(new AppError("only image upload is allowed.", 400), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+exports.uploadPhotos = upload.single("photo");
+```
+
+```javascript
+router.get("/", uploadController.uploadPhotos);
+```
+
+### Resizing images
+
+Install `sharp` package, `npm install sharp`,
+
+```javascript
+const sharp = require("sharp");
+
+exports.resizePhoto = catchAsync(async (req, res, next) => {
+  if (!req.file) {
+    return next();
+  }
+
+  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+
+  await sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat("jpeg")
+    .jpeg({ quality: 90 })
+    .toFile("public/images/${req.file.filename}");
+
+  next();
+};)
+```
+
+### Uploading via forms
+
+`form` should have the `enctype='multipart/form-data'` attribute.
+
+```pug
+input(type="file", accept="image/*", id='photo', name='photo')
+```
+
+```javascript
+const form = new formData();
+
+form("email", document.querySelector("email"));
 ```

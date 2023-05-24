@@ -60,7 +60,14 @@ const printNumber: (i: number) => void = (i: number) => {
 
 If declaration and initialization of a variable are on the same line then the typescript will figure out the type, this is known as `type inference`.
 
+```typescript
+let value: boolean | number;
+```
+
 ### Type Annotations with Functions and Objects
+
+Type Annotations will figure out what is the type of arguments and return value, but type inference
+will only figure out the return value.
 
 ```typescript
 const add = (a: number, b: number): number => {
@@ -88,13 +95,19 @@ const days = {
   tomorrow: "tuesday",
 };
 
-const theDays = (daysAre: {today: string, tomorrow: string}) => {
-  console.log(daysAre:today, daysAre:tomorrow);
-}
+const theDays = (daysAre: { today: string; tomorrow: string }) => {
+  console.log(daysAre.today, daysAre.tomorrow);
+};
 
-const theDaysWithDestructuring = ({today, tomorrow}: {today: string, tomorrow: string}) => {
-  console.log(daysAre:today, daysAre:tomorrow);
-}
+const theDaysWithDestructuring = ({
+  today,
+  tomorrow,
+}: {
+  today: string;
+  tomorrow: string;
+}) => {
+  console.log(today, tomorrow);
+};
 ```
 
 ```typescript
@@ -118,7 +131,7 @@ const calender: (string | Date)[] = ["today", new Date()];
 `Tuples`,
 
 ```typescript
-type Drink = [string, number];
+const Drink = [string, number];
 
 const soda: Drink = ["white", 40];
 ```

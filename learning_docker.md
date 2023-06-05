@@ -28,23 +28,27 @@ To generate this message, Docker took the following steps:
 
 ### docker commands
 
-- `docker run image-name`, create a container and run it, `docker run image-name command-name`, this form can be used to overwrite default command, but the command should be present in `File System Snapshot`.
+- `docker run <image-name>`, create a container and run it, `docker run <image-name> <command-name>`, this form can be used to overwrite default command, but the command should be present in `File System Snapshot`.
 
 - `docker ps`, List all running containers, `--all` options list all the containers that have been executed.
 
-- `docker create image-name`, it creates a container and returns it's `id`, then `docker start -a container-id` starts the container.
+- `docker create <image-name>`, it creates a container and returns it's `id`.
+
+- `docker start -a <container-id>` starts the container, `-a` makes the docker to watch the output.
 
 - `docker system prune`, delete all the containers.
 
-- `docker logs container-id`, get logs from the containers.
+- `docker logs <container-id>`, get logs from the containers.
 
-- `docker stop container-id`, or `docker kill container-id`, are used to stop the containers, `stop` issues `SIGTERM` signal and `kill` issues `SIGKILL` signal.
+- `docker stop <container-id>`, or `docker kill <container-id>`, are used to stop the containers, `stop` issues `SIGTERM` signal and `kill` issues `SIGKILL` signal.
 
-- `docker exec -it container-id command`, execute additional command.
+- `docker exec -it <container-id> <command-name>`, execute additional command.
+
+- `docker exec -it <container-id> sh`, execute terminal commands, `docker run -it busybox sh`.
 
 ### Building docker images
 
-To build a image first create a `dockerfile` which contains all the configurations, then it is passed to `docker-client`, and then to `docker-server` which creates a usable `docker-image`.
+To build a image first create a `Dockerfile` which contains all the configurations, then it is passed to `docker-client`, and then to `docker-server` which creates a usable `docker-image`.
 
 Here `FROM`, `RUN` and `CMD` are instructions to docker server, to build image run `docker build .` command.
 
@@ -54,13 +58,15 @@ RUN apk add --update redis
 CMD ["redis-server"]
 ```
 
-adding a tag name to image,
+adding a tag to image,
 
 `dockerID / repoName : version`, it can be used as,
 
 ```bash
-docker build -t linuxMachine/redis:latest .
+docker build -t linux/redis:latest .
 ```
+
+`docker commit -c 'CMD ["<command-name>"]'` to create images manually,
 
 during building use `COPY` command to copy the build files to the container,
 
@@ -78,13 +84,13 @@ CMD ["npm", "start"]
 `building image`,
 
 ```bash
-docker build -t linuxMachine/simpleWeb .
+docker build -t linux/simpleWeb .
 ```
 
 `docker run` with `port mapping`,
 
 ```bash
-docker run -p 8080:8080 linuxMachine/simpleWeb
+docker run -p 8080:8080 linux/simpleWeb
 ```
 
 ## Docker compose with multiple local containers
@@ -141,4 +147,50 @@ RUN npm install
 COPY . .
 
 CMD ["npm","start"]
+```
+
+## Production grade workflow
+
+The flow is development, testing and deployment, in a project there are two `Dockerfiles` one for development version and one for production version.
+
+To build from a different docker file use `-f` option, `docker build -f Dockerfile.dev .`
+
+### Docker volumes
+
+`Docker Volumes` are references to the files in the working directory, The volumes needs to be bookmarked.
+
+```bash
+docker run -p 3000:3000 -v /app/node_modules -v $(pwd):/app 68dab4h22c
+```
+
+Use the node_modules from `/app`, but for other files reference to the files from current working directory.
+
+```yml
+version: "3"
+service:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - /app/node_modules
+      - .:/app
+```
+
+### Multi setup docker builds
+
+We need multiple docker builds because the alpine image doesn't know about the nginx, and we only need build contents and not the node_modules so in the first part we will build the project and then we will copy everything from first phase to the second phase and start nginx server.
+
+```dockerfile
+FROM node:alpine as builder
+WORKDIR '/app'
+COPY package.json .
+RUN npm install
+COPY . .
+RUN npm run build
+
+FROM nginx
+COPY --from=builder /app/build /usr/share/nginx/html
 ```

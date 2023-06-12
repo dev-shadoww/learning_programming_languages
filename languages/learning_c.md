@@ -1,5 +1,16 @@
 # Learning C
 
+## Hello, World
+
+```c
+#include <stdio.h>
+
+int main(){
+  printf("Hello World!");
+  return 0;
+}
+```
+
 ## Dynamic memory allocation
 
 The routines for dynamic memory allocation are defined in `stdlib.h`, the function are `malloc`, `calloc` and `realloc`, each of these functions returns a `void*` pointer to a block of memory in the heap space.

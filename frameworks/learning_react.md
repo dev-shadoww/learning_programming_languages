@@ -284,3 +284,54 @@ const handleCreate = () => {
   };
 };
 ```
+
+`useEffect` is used to run code when a component is initially rendered, or it is rerendered.
+
+```javascript
+import { useEffect } from "react";
+
+useEffect(() => {
+  console.log("hello React");
+}, []);
+```
+
+The code runs based on the second argument, in this case when the array is empty then it is called.
+
+## Communication using the context system
+
+Context system is alternate to props.
+
+Using Context,
+
+- Create Context, it provides a `provider` (component used to specify what data we want to share) and `consumer` (Component used to get access to data).
+
+```javascript
+import { createContext } from "react";
+
+const ExampleContext = createContext();
+```
+
+- Specify data that will be shared
+
+Here `<MyContainer>` and it's children can get the value,
+
+```javascript
+<ExampleContext.Provider value={5}>
+  <MyContainer>
+</ExampleContext.Provider>
+```
+
+- Consume the data in component
+
+```javascript
+import { useContext } from "react";
+import ExampleContext from "./Example";
+
+function myComponent() {
+  const num = useContext(BookContext);
+
+  return <div>num</div>;
+}
+```
+
+### Changing Context Values

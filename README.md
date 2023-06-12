@@ -6,73 +6,67 @@ These files are incomplete because i'm creating them while learning, and also i 
 
 Also a discord server is coming soon.
 
-## Learning C++
+## Languages
 
-The sources are `Books`,
-
-- Primer C++, 5 Edition
-
-## Learning JavaScript
+### Learning JavaScript
 
 The sources are `Udemy` course,
 
 - By Jonas schmedtman
 
-## Learning Python
+### Learning Python
 
 The sources are `Udemy` course,
 
 - By Jose Portilla
 
-## Learning C
+### Learning C
 
 The sources are `Books`,
 
 - Learn C Programming, 2e
 
-## Learning Algorithms
+### Learning SQL and PostgreSQL
 
-The sources are `Books`,
+The sources are `Udemy` course,
 
-- Introduction To Algorithms, 4e
+- By Stephen Grider
 
-## Learning NodeJS
+### Learning Java
+
+The sources are `Udemy` course,
+
+- By Tim Buchalka
+
+## FrameWorks
+
+### Learning NodeJS
 
 The sources are `Udemy` course,
 
 - By Jonas schmedtman
 
-## Learning SQL and PostgreSQL
+### Learning React
 
 The sources are `Udemy` course,
 
 - By Stephen Grider
 
-## Learning React
+### Learning TypeScript
 
 The sources are `Udemy` course,
 
 - By Stephen Grider
 
-## Learning Tkinter
+## Tools
 
-The sources are `Books`,
-
-- Python GIU programming with tkinter, 2e
-
-## Learning Docker
+### Learning Docker
 
 The sources are `Udemy` course,
 
 - By Stephen Grider
 
-## Learning TypeScript
-
-The sources are `Udemy` course,
-
-- By Stephen Grider
-
-## Learning ncurses
+### Learning ncurses
 
 The sources are `Books`,
 

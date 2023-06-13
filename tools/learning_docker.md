@@ -18,7 +18,6 @@ To generate this message, Docker took the following steps:
 
 - The Docker client contacted the Docker daemon.
 - The Docker daemon pulled the "hello-world" image from the Docker Hub.
-  (amd64)
 - The Docker daemon created a new container from that image which runs the
   executable that produces the output you are currently reading.
 - The Docker daemon streamed that output to the Docker client, which sent it
@@ -192,5 +191,37 @@ COPY . .
 RUN npm run build
 
 FROM nginx
+EXPOSE 80
 COPY --from=builder /app/build /usr/share/nginx/html
+```
+
+### Travis CI
+
+Configuring Travis CI, Create `.travis.yml` file, here Travis CI assumes that the `script` commands completes it's execution.
+
+Here we are using Travis CI with AWS Elastic BeanStalk, it creates a load balancer which automatically routes the traffic if the connections reaches the threshold.
+
+```yaml
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t linux/example -f Dockerfile.dev .
+
+script:
+  - docker run linux/example npm run test -- --coverage
+
+deploy:
+  provider: elasticbeanstalk
+  region: "us-west-2"
+  app: "docker"
+  env: "docker-env"
+  bucket_name: "bucket-name"
+  bucket_path: "docker"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secret: "$AWS_SECRET_KEY"
 ```

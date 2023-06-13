@@ -102,6 +102,8 @@ To use `State System`,
 
 `State` is data that changes as the user interacts with the app, when this data changes the react will update it automatically.
 
+Whenever the state changes, react rerenders the page automatically.
+
 ```javascript
 import { useState } from "react";
 
@@ -309,6 +311,8 @@ Using Context,
 import { createContext } from "react";
 
 const ExampleContext = createContext();
+
+export default ExampleContext;
 ```
 
 - Specify data that will be shared
@@ -328,10 +332,43 @@ import { useContext } from "react";
 import ExampleContext from "./Example";
 
 function myComponent() {
-  const num = useContext(BookContext);
+  const num = useContext(ExampleContext);
 
   return <div>num</div>;
 }
 ```
 
 ### Changing Context Values
+
+```js
+import { createContext, useState } from 'react';
+
+const ExampleContext = createContext();
+
+function Provider({children}){
+  const [count, setCount] - useState(0);
+
+  const valueToShare = {
+    count: count,
+    incrementCount: () => {
+      setCount(count + 1);
+    }
+  };
+
+  return(
+    <BooksContext.Provider value={valueToShare}>
+        {children}
+    <BooksContext.Provider>
+  )
+}
+```
+
+### Application State, Component State
+
+In Application State data is used by many different applications, but in Component State data is used by very few components.
+
+Share all the states in Application State with `Context System`.
+
+## Hooks
+
+Hooks are functions that add additional functionality to the components.

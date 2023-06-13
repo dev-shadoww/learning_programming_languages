@@ -328,3 +328,19 @@ public class main{
 ## Encapsulation
 
 It is hiding things, or making them private or inaccessible.
+
+## Array
+
+Array creation in java,
+
+```java
+int[10] arrayExample = new int[10];
+```
+
+Enhanced for loop for array,
+
+```java
+for(int arrayElement: arrayExample){
+  System.out.println(arrayElement);
+}
+```

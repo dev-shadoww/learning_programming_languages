@@ -71,3 +71,11 @@ The sources are `Udemy` course,
 The sources are `Books`,
 
 - Programmer's guide to ncurses
+
+## Other
+
+### Learning Data Science
+
+The sources are `Udemy` course,
+
+- By 365 Data Science

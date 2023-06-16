@@ -372,3 +372,33 @@ Share all the states in Application State with `Context System`.
 ## Hooks
 
 Hooks are functions that add additional functionality to the components.
+
+### useCallback
+
+The `useEffect` has a major bug which makes some of the applications behave abnormally, so to avoid that `useCallback` is used.
+
+```js
+const stableExample = useCallback(exampleFunction(), []);
+```
+
+It returns the function which is passed as first argument, as in `useEffect` creates separate variables with the same name, and it causes the abnormal behavior of the `useEffect`.
+
+```js
+useEffect(() => {
+  stableExample();
+}, [stableExample]);
+```
+
+The `useEffect` can only return functions and nothing else.
+
+```js
+useEffect(() => {
+  const greet = () => {
+    console.log("Hello from useEffect");
+  };
+
+  return greet;
+}, []);
+```
+
+Here the `greet` is called from second render onwards, on first render useEffect returns the function and holds a reference to it, on the second render it calls the function, and create a new function and returns it.

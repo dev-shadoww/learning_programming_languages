@@ -79,3 +79,9 @@ The sources are `Books`,
 The sources are `Udemy` course,
 
 - By 365 Data Science
+
+### Learning Machine Learning
+
+The sources are `Udemy` course,
+
+- By Data Science Team

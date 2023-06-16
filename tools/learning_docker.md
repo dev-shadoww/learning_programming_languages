@@ -162,6 +162,8 @@ To build from a different docker file use `-f` option, `docker build -f Dockerfi
 docker run -p 3000:3000 -v /app/node_modules -v $(pwd):/app 68dab4h22c
 ```
 
+Here `$(pwd):/app` means to map the `pwd` into `/app` directory.
+
 Use the node_modules from `/app`, but for other files reference to the files from current working directory.
 
 ```yml
@@ -224,4 +226,61 @@ deploy:
   access_key_id: $AWS_ACCESS_KEY
   secret_access_key:
     secret: "$AWS_SECRET_KEY"
+```
+
+## Building multi container applications
+
+Here the project uses React, Express and a Worker node, now creating `dev docker files`.
+
+`Dockerfile.dev` for Client,
+
+```dockerfile
+FROM node:alpine
+WORKDIR '/app'
+COPY ./package.json ./
+RUN npm install
+COPY . .
+CMD ["npm", "run",  "start"]
+```
+
+`Dockerfile.dev` for Server,
+
+```dockerfile
+FROM node:alpine
+WORKDIR '/app'
+COPY ./package.json ./
+RUN npm install
+COPY . .
+CMD ["npm", "run", "dev"]
+```
+
+`Dockerfile.dev` for Worker,
+
+```dockerfile
+FROM node:alpine
+WORKDIR '/app'
+COPY ./package.json ./
+RUN npm install
+COPY . .
+CMD ["npm", "run", "dev"]
+```
+
+Adding docker compose files to the project,
+
+`docker-compose.yml`,
+
+```yaml
+version: 3
+services:
+  postgres:
+    image: "postgres:latest"
+  redis:
+    image: "redis:latest"
+  server:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./server/
+    volumes:
+      - /app/node_modules
+      - ./server:/app
 ```

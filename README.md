@@ -24,7 +24,7 @@ The sources are `Udemy` course,
 
 The sources are `Books`,
 
-- Learn C Programming, 2e
+- C In A NutShell
 
 ### Learning SQL and PostgreSQL
 
@@ -85,3 +85,9 @@ The sources are `Udemy` course,
 The sources are `Udemy` course,
 
 - By Data Science Team
+
+### Learning OpenGL
+
+The sources are `Books`,
+
+- OpenGL Programming Guide

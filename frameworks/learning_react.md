@@ -402,3 +402,25 @@ useEffect(() => {
 ```
 
 Here the `greet` is called from second render onwards, on first render useEffect returns the function and holds a reference to it, on the second render it calls the function, and create a new function and returns it.
+
+## React Navigation
+
+Anything that is placed between component tags will be passed as prop with tag `children`.
+
+```js
+function App() {
+  return (
+    <div>
+      <Button>Text Is Passed!!</Button>
+    </div>
+  );
+}
+```
+
+```js
+function Button({ children }) {
+  return <button>{children}</button>;
+}
+
+export default Button;
+```

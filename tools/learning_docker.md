@@ -283,4 +283,26 @@ services:
     volumes:
       - /app/node_modules
       - ./server:/app
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PG_USER=postgres
+      - PG_HOST=postgres
+      - PG_PASSWORD=postgres_password
+      - PG_DATABASE=postgres
+      - PG_PORT=5432
+  client:
+    build:
+      dockerfile: dockerfile.dev
+      context: ./client
+    volumes:
+      - app/node_modules
+      - ./client:/app
+  worker:
+    build:
+      dockerfile: dockerfile.dev
+      context: ./worker
+    volumes:
+      - app/node_modules
+      - ./worker:/app
 ```
